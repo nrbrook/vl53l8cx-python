@@ -2,8 +2,8 @@
 
 import time
 import ST7789
-import vl53l5cx_ctypes as vl53l5cx
-from vl53l5cx_ctypes import STATUS_RANGE_VALID, STATUS_RANGE_VALID_LARGE_PULSE
+import vl53l8cx_ctypes as vl53l8cx
+from vl53l8cx_ctypes import STATUS_RANGE_VALID, STATUS_RANGE_VALID_LARGE_PULSE
 import numpy
 from PIL import Image, ImageDraw
 
@@ -30,7 +30,7 @@ display = ST7789.ST7789(
 
 
 print("Uploading firmware, please wait...")
-vl53 = vl53l5cx.VL53L5CX()
+vl53 = vl53l8cx.VL53L8CX()
 print("Done!")
 vl53.set_resolution(8 * 8)
 

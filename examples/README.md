@@ -1,6 +1,6 @@
 # Visual Examples
 
-These aren't practical applications for the VL53L5CX but provide a great way to visualise what the sensor is "seeing."
+These aren't practical applications for the VL53L8CX but provide a great way to visualise what the sensor is "seeing."
 
 They require matplotlib and numpy, install with:
 

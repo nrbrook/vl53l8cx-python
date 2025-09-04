@@ -1,7 +1,7 @@
 /*******************************************************************************
 * Copyright (c) 2020, STMicroelectronics - All Rights Reserved
 *
-* This file is part of the VL53L5CX Ultra Lite Driver and is dual licensed,
+* This file is part of the VL53L8CX Ultra Lite Driver and is dual licensed,
 * either 'STMicroelectronics Proprietary license'
 * or 'BSD 3-clause "New" or "Revised" License' , at your option.
 *
@@ -21,7 +21,7 @@
 *
 ********************************************************************************
 *
-* Alternatively, the VL53L5CX Ultra Lite Driver may be distributed under the
+* Alternatively, the VL53L8CX Ultra Lite Driver may be distributed under the
 * terms of 'BSD 3-clause "New" or "Revised" License', in which case the
 * following provisions apply instead of the ones mentioned above :
 *
@@ -68,8 +68,8 @@
 #include <string.h>
 
 /**
- * @brief Structure VL53L5CX_Platform needs to be filled by the customer,
- * depending on his platform. At least, it contains the VL53L5CX I2C address.
+ * @brief Structure VL53L8CX_Platform needs to be filled by the customer,
+ * depending on his platform. At least, it contains the VL53L8CX I2C address.
  * Some additional fields can be added, as descriptors, or platform
  * dependencies. Anything added into this structure is visible into the platform
  * layer.
@@ -88,7 +88,7 @@ typedef struct
     i2c_read_func i2c_read;
     i2c_write_func i2c_write;
     sleep_func sleep;
-} VL53L5CX_Platform;
+} VL53L8CX_Platform;
 
 /*
  * @brief The macro below is used to define the number of target per zone sent
@@ -97,7 +97,7 @@ typedef struct
  * zone means a lower RAM). The value must be between 1 and 4.
  */
 
-//#define 	VL53L5CX_NB_TARGET_PER_ZONE		1U
+//#define 	VL53L8CX_NB_TARGET_PER_ZONE		1U
 
 /*
  * @brief The macro below can be used to avoid data conversion into the driver.
@@ -106,7 +106,7 @@ typedef struct
  * an increased precision.
  */
 
-// #define 	VL53L5CX_USE_RAW_FORMAT
+// #define 	VL53L8CX_USE_RAW_FORMAT
 
 /*
  * @brief All macro below are used to configure the sensor output. User can
@@ -114,18 +114,18 @@ typedef struct
  * I2C access.
  */
 
-// #define VL53L5CX_DISABLE_AMBIENT_PER_SPAD
-// #define VL53L5CX_DISABLE_NB_SPADS_ENABLED
-// #define VL53L5CX_DISABLE_NB_TARGET_DETECTED
-// #define VL53L5CX_DISABLE_SIGNAL_PER_SPAD
-// #define VL53L5CX_DISABLE_RANGE_SIGMA_MM
-// #define VL53L5CX_DISABLE_DISTANCE_MM
-// #define VL53L5CX_DISABLE_REFLECTANCE_PERCENT
-// #define VL53L5CX_DISABLE_TARGET_STATUS
-// #define VL53L5CX_DISABLE_MOTION_INDICATOR
+// #define VL53L8CX_DISABLE_AMBIENT_PER_SPAD
+// #define VL53L8CX_DISABLE_NB_SPADS_ENABLED
+// #define VL53L8CX_DISABLE_NB_TARGET_DETECTED
+// #define VL53L8CX_DISABLE_SIGNAL_PER_SPAD
+// #define VL53L8CX_DISABLE_RANGE_SIGMA_MM
+// #define VL53L8CX_DISABLE_DISTANCE_MM
+// #define VL53L8CX_DISABLE_REFLECTANCE_PERCENT
+// #define VL53L8CX_DISABLE_TARGET_STATUS
+// #define VL53L8CX_DISABLE_MOTION_INDICATOR
 
 /**
- * @param (VL53L5CX_Platform*) p_platform : Pointer of VL53L5CX platform
+ * @param (VL53L8CX_Platform*) p_platform : Pointer of VL53L8CX platform
  * structure.
  * @param (uint16_t) Address : I2C location of value to read.
  * @param (uint8_t) *p_values : Pointer of value to read.
@@ -133,13 +133,13 @@ typedef struct
  */
 
 uint8_t RdByte(
-		VL53L5CX_Platform *p_platform,
+		VL53L8CX_Platform *p_platform,
 		uint16_t RegisterAddress,
 		uint8_t *p_value);
 
 /**
  * @brief Mandatory function used to write one single byte.
- * @param (VL53L5CX_Platform*) p_platform : Pointer of VL53L5CX platform
+ * @param (VL53L8CX_Platform*) p_platform : Pointer of VL53L8CX platform
  * structure.
  * @param (uint16_t) Address : I2C location of value to read.
  * @param (uint8_t) value : Pointer of value to write.
@@ -147,13 +147,13 @@ uint8_t RdByte(
  */
 
 uint8_t WrByte(
-		VL53L5CX_Platform *p_platform,
+		VL53L8CX_Platform *p_platform,
 		uint16_t RegisterAddress,
 		uint8_t value);
 
 /**
  * @brief Mandatory function used to read multiples bytes.
- * @param (VL53L5CX_Platform*) p_platform : Pointer of VL53L5CX platform
+ * @param (VL53L8CX_Platform*) p_platform : Pointer of VL53L8CX platform
  * structure.
  * @param (uint16_t) Address : I2C location of values to read.
  * @param (uint8_t) *p_values : Buffer of bytes to read.
@@ -162,14 +162,14 @@ uint8_t WrByte(
  */
 
 uint8_t RdMulti(
-		VL53L5CX_Platform *p_platform,
+		VL53L8CX_Platform *p_platform,
 		uint16_t RegisterAddress,
 		uint8_t *p_values,
 		uint32_t size);
 
 /**
  * @brief Mandatory function used to write multiples bytes.
- * @param (VL53L5CX_Platform*) p_platform : Pointer of VL53L5CX platform
+ * @param (VL53L8CX_Platform*) p_platform : Pointer of VL53L8CX platform
  * structure.
  * @param (uint16_t) Address : I2C location of values to write.
  * @param (uint8_t) *p_values : Buffer of bytes to write.
@@ -178,7 +178,7 @@ uint8_t RdMulti(
  */
 
 uint8_t WrMulti(
-		VL53L5CX_Platform *p_platform,
+		VL53L8CX_Platform *p_platform,
 		uint16_t RegisterAddress,
 		uint8_t *p_values,
 		uint32_t size);
@@ -188,13 +188,13 @@ uint8_t WrMulti(
  * sensor. This function is not used in the API, but it can be used by the host.
  * This function is not mandatory to fill if user don't want to reset the
  * sensor.
- * @param (VL53L5CX_Platform*) p_platform : Pointer of VL53L5CX platform
+ * @param (VL53L8CX_Platform*) p_platform : Pointer of VL53L8CX platform
  * structure.
  * @return (uint8_t) status : 0 if OK
  */
 
 uint8_t Reset_Sensor(
-		VL53L5CX_Platform *p_platform);
+		VL53L8CX_Platform *p_platform);
 
 /**
  * @brief Mandatory function, used to swap a buffer. The buffer size is always a
@@ -209,14 +209,14 @@ void SwapBuffer(
 /**
  * @brief Mandatory function, used to wait during an amount of time. It must be
  * filled as it's used into the API.
- * @param (VL53L5CX_Platform*) p_platform : Pointer of VL53L5CX platform
+ * @param (VL53L8CX_Platform*) p_platform : Pointer of VL53L8CX platform
  * structure.
  * @param (uint32_t) TimeMs : Time to wait in ms.
  * @return (uint8_t) status : 0 if wait is finished.
  */
 
 uint8_t WaitMs(
-		VL53L5CX_Platform *p_platform,
+		VL53L8CX_Platform *p_platform,
 		uint32_t TimeMs);
 
 #endif	// _PLATFORM_H_

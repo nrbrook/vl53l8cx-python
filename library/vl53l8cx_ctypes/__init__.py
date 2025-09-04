@@ -59,13 +59,13 @@ _PATH = pathlib.Path(__file__).parent.parent.absolute()
 _SUFFIX = sysconfig.get_config_var('EXT_SUFFIX')
 
 # Library name
-_NAME = pathlib.Path("vl53l5cx_ctypes").with_suffix(_SUFFIX)
+_NAME = pathlib.Path("vl53l8cx_ctypes").with_suffix(_SUFFIX)
 
 # Load the DLL
 _VL53 = CDLL(_PATH / _NAME)
 
 
-class VL53L5CX_MotionData(Structure):
+class VL53L8CX_MotionData(Structure):
     _fields_ = [
         ("global_indicator_1", c_uint32),
         ("global_indicator_2", c_uint32),
@@ -77,7 +77,7 @@ class VL53L5CX_MotionData(Structure):
     ]
 
 
-class VL53L5CX_ResultsData(Structure):
+class VL53L8CX_ResultsData(Structure):
     _fields_ = [
         ("silicon_temp_degc", c_int8),
         ("ambient_per_spad", c_uint32 * 64),
@@ -88,13 +88,13 @@ class VL53L5CX_ResultsData(Structure):
         ("distance_mm", c_int16 * 64 * NB_TARGET_PER_ZONE),
         ("reflectance", c_uint8 * 64 * NB_TARGET_PER_ZONE),
         ("target_status", c_uint8 * 64 * NB_TARGET_PER_ZONE),
-        ("motion_indicator", VL53L5CX_MotionData)
+        ("motion_indicator", VL53L8CX_MotionData)
     ]
 
 
-class VL53L5CX:
+class VL53L8CX:
     def __init__(self, i2c_addr=DEFAULT_I2C_ADDRESS, i2c_dev=None, skip_init=False):
-        """Initialise VL53L5CX.
+        """Initialise VL53L8CX.
 
         :param i2c_addr: Sensor i2c address. (defualt: 0x29)
         :param skip_init: Skip (slow) sensor init (if it has not been power cycled).
@@ -137,15 +137,15 @@ class VL53L5CX:
         self._configuration = _VL53.get_configuration(i2c_addr << 1, self._i2c_rd_func, self._i2c_wr_func, self._sleep_func)
 
         if not self.is_alive():
-            raise RuntimeError(f"VL53L5CX not detected on 0x{i2c_addr:02x}")
+            raise RuntimeError(f"VL53L8CX not detected on 0x{i2c_addr:02x}")
 
         if not skip_init:
             if not self.init():
-                raise RuntimeError("VL53L5CX init failed!")
+                raise RuntimeError("VL53L8CX init failed!")
 
     def init(self):
-        """Initialise VL53L5CX."""
-        return _VL53.vl53l5cx_init(self._configuration) == STATUS_OK
+        """Initialise VL53L8CX."""
+        return _VL53.vl53l8cx_init(self._configuration) == STATUS_OK
 
     def __del__(self):
         if self._configuration:
@@ -163,7 +163,7 @@ class VL53L5CX:
         """
         if self._motion_configuration is None:
             self._motion_configuration = _VL53.get_motion_configuration()
-        return _VL53.vl53l5cx_motion_indicator_init(self._configuration, self._motion_configuration, resolution) == 0
+        return _VL53.vl53l8cx_motion_indicator_init(self._configuration, self._motion_configuration, resolution) == 0
 
     def set_motion_distance(self, distance_min, distance_max):
         """Set motion indicator detection distance.
@@ -178,7 +178,7 @@ class VL53L5CX:
             raise ValueError("distance_min must be >= 400mm")
         if distance_max - distance_min > 1500:
             raise ValueError("distance between distance_min and distance_max must be < 1500mm")
-        return _VL53.vl53l5cx_motion_indicator_set_distance_motion(self._configuration, self._motion_configuration, distance_min, distance_max)
+        return _VL53.vl53l8cx_motion_indicator_set_distance_motion(self._configuration, self._motion_configuration, distance_min, distance_max)
 
     def is_alive(self):
         """Check sensor is connected.
@@ -187,20 +187,20 @@ class VL53L5CX:
 
         """
         is_alive = c_int(0)
-        status = _VL53.vl53l5cx_is_alive(self._configuration, byref(is_alive))
+        status = _VL53.vl53l8cx_is_alive(self._configuration, byref(is_alive))
         return status == STATUS_OK and is_alive.value == 1
 
     def start_ranging(self):
         """Start ranging."""
-        _VL53.vl53l5cx_start_ranging(self._configuration)
+        _VL53.vl53l8cx_start_ranging(self._configuration)
 
     def stop_ranging(self):
         """Stop ranging."""
-        _VL53.vl53l5cx_stop_ranging(self._configuration)
+        _VL53.vl53l8cx_stop_ranging(self._configuration)
 
     def set_i2c_address(self, i2c_address):
         """Change the i2c address."""
-        return _VL53.vl53l5cx_set_i2c_address(self._configuration, i2c_address << 1) == STATUS_OK
+        return _VL53.vl53l8cx_set_i2c_address(self._configuration, i2c_address << 1) == STATUS_OK
 
     def set_ranging_mode(self, ranging_mode):
         """Set ranging mode.
@@ -208,7 +208,7 @@ class VL53L5CX:
         :param ranging_mode: Either Continuous (RANGING_MODE_CONTINUOUS) or Autonomous (RANGING_MODE_AUTONOMOUS).
 
         """
-        _VL53.vl53l5cx_set_ranging_mode(self._configuration, ranging_mode)
+        _VL53.vl53l8cx_set_ranging_mode(self._configuration, ranging_mode)
 
     def set_ranging_frequency_hz(self, ranging_frequency_hz):
         """Set ranging frequency.
@@ -218,7 +218,7 @@ class VL53L5CX:
         :param ranging_frequency_hz: Frequency in hz from 1-60Hz at 4*4 and 1-15Hz at 8*8.
 
         """
-        _VL53.vl53l5cx_set_ranging_frequency_hz(self._configuration, ranging_frequency_hz)
+        _VL53.vl53l8cx_set_ranging_frequency_hz(self._configuration, ranging_frequency_hz)
 
     def set_resolution(self, resolution):
         """Set sensor resolution.
@@ -228,7 +228,7 @@ class VL53L5CX:
         :param resolution: Either 4*4 or 8*8. The lower resolution supports a faster output data rate,
 
         """
-        _VL53.vl53l5cx_set_resolution(self._configuration, resolution)
+        _VL53.vl53l8cx_set_resolution(self._configuration, resolution)
 
     def set_integration_time_ms(self, integration_time_ms):
         """Set sensor integration time.
@@ -236,7 +236,7 @@ class VL53L5CX:
         :param integration_time_ms: From 2ms to 1000ms. Must be lower than the ranging period.
 
         """
-        _VL53.vl53l5cx_set_integration_time_ms(self._configuration, integration_time_ms)
+        _VL53.vl53l8cx_set_integration_time_ms(self._configuration, integration_time_ms)
 
     def set_sharpener_percent(self, sharpener_percent):
         """Set sharpener intensity.
@@ -246,7 +246,7 @@ class VL53L5CX:
         :param sharpener_percent: From 0 (off) to 99 (full) (hardware default: 5%)
 
         """
-        _VL53.vl53l5cx_set_sharpener_percent(self._configuration, sharpener_percent)
+        _VL53.vl53l8cx_set_sharpener_percent(self._configuration, sharpener_percent)
 
     def set_target_order(self, target_order):
         """Set target order.
@@ -256,7 +256,7 @@ class VL53L5CX:
         :param target_order: Either Strongest (default, TARGET_ORDER_STRONGEST) or Closest (TARGET_ORDER_CLOSEST)
 
         """
-        _VL53.vl53l5cx_set_target_order(self._configuration, target_order)
+        _VL53.vl53l8cx_set_target_order(self._configuration, target_order)
 
     def set_power_mode(self, power_mode):
         """Set power mode.
@@ -264,18 +264,18 @@ class VL53L5CX:
         :param power_mode: One of Sleep (POWER_MODE_SLEEP) or Wakeup (POWER_MODE_WAKEUP)
 
         """
-        _VL53.vl53l5cx_set_power_mode(self._configuration, power_mode)
+        _VL53.vl53l8cx_set_power_mode(self._configuration, power_mode)
 
     def data_ready(self):
         """Check if data is ready."""
         ready = c_int(0)
-        status = _VL53.vl53l5cx_check_data_ready(self._configuration, byref(ready))
+        status = _VL53.vl53l8cx_check_data_ready(self._configuration, byref(ready))
         return ready.value and status == STATUS_OK
 
     def get_data(self):
         """Get data."""
-        results = VL53L5CX_ResultsData()
-        status = _VL53.vl53l5cx_get_ranging_data(self._configuration, byref(results))
+        results = VL53L8CX_ResultsData()
+        status = _VL53.vl53l8cx_get_ranging_data(self._configuration, byref(results))
         if status != STATUS_OK:
             raise RuntimeError("Error reading data.")
         return results

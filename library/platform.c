@@ -1,7 +1,7 @@
 /*******************************************************************************
 * Copyright (c) 2020, STMicroelectronics - All Rights Reserved
 *
-* This file is part of the VL53L5CX Ultra Lite Driver and is dual licensed,
+* This file is part of the VL53L8CX Ultra Lite Driver and is dual licensed,
 * either 'STMicroelectronics Proprietary license'
 * or 'BSD 3-clause "New" or "Revised" License' , at your option.
 *
@@ -21,7 +21,7 @@
 *
 ********************************************************************************
 *
-* Alternatively, the VL53L5CX Ultra Lite Driver may be distributed under the
+* Alternatively, the VL53L8CX Ultra Lite Driver may be distributed under the
 * terms of 'BSD 3-clause "New" or "Revised" License', in which case the
 * following provisions apply instead of the ones mentioned above :
 *
@@ -64,7 +64,7 @@
 #include "platform.h"
 
 uint8_t RdByte(
-		VL53L5CX_Platform *p_platform,
+		VL53L8CX_Platform *p_platform,
 		uint16_t RegisterAddress,
 		uint8_t *p_value)
 {
@@ -76,7 +76,7 @@ uint8_t RdByte(
 }
 
 uint8_t WrByte(
-		VL53L5CX_Platform *p_platform,
+		VL53L8CX_Platform *p_platform,
 		uint16_t RegisterAddress,
 		uint8_t value)
 {
@@ -88,7 +88,7 @@ uint8_t WrByte(
 }
 
 uint8_t WrMulti(
-		VL53L5CX_Platform *p_platform,
+		VL53L8CX_Platform *p_platform,
 		uint16_t RegisterAddress,
 		uint8_t *p_values,
 		uint32_t size)
@@ -101,7 +101,7 @@ uint8_t WrMulti(
 }
 
 uint8_t RdMulti(
-		VL53L5CX_Platform *p_platform,
+		VL53L8CX_Platform *p_platform,
 		uint16_t RegisterAddress,
 		uint8_t *p_values,
 		uint32_t size)
@@ -114,7 +114,7 @@ uint8_t RdMulti(
 }
 
 uint8_t Reset_Sensor(
-		VL53L5CX_Platform *p_platform)
+		VL53L8CX_Platform *p_platform)
 {
 	uint8_t status = 0;
 
@@ -158,7 +158,7 @@ void SwapBuffer(
 }
 
 uint8_t WaitMs(
-		VL53L5CX_Platform *p_platform,
+		VL53L8CX_Platform *p_platform,
 		uint32_t TimeMs)
 {
 	if(p_platform->sleep) p_platform->sleep(TimeMs);

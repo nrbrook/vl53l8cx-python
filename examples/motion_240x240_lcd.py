@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import time
-import vl53l5cx_ctypes as vl53l5cx
+import vl53l8cx_ctypes as vl53l8cx
 import ST7789
 import numpy
 from PIL import Image
@@ -42,7 +42,7 @@ display = ST7789.ST7789(
 pal = get_palette(COLOR_MAP)
 
 print("Uploading firmware, please wait...")
-vl53 = vl53l5cx.VL53L5CX()
+vl53 = vl53l8cx.VL53L8CX()
 print("Done!")
 vl53.set_resolution(8 * 8)
 

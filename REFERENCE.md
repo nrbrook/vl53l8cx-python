@@ -1,6 +1,6 @@
-# VL53L5CX Function Reference <!--omit in toc-->
+# VL53L8CX Function Reference <!--omit in toc-->
 
-- [VL53L5CX Function Reference](#vl53l5cx-function-reference)
+- [VL53L8CX Function Reference](#vl53l8cx-function-reference)
   - [Basic Setup](#basic-setup)
   - [Functions](#functions)
     - [Enable Ranging & Get Data](#enable-ranging--get-data)
@@ -25,14 +25,14 @@
 
 ## Basic Setup
 
-By default the VL53L5CX library uses i2c bus 1 (/dev/i2c-1) and address 0x29.
+By default the VL53L8CX library uses i2c bus 1 (/dev/i2c-1) and address 0x29.
 
 A basic setup looks like this:
 
 ```python
-import vl53l5cx
+import vl53l8cx
 
-tof = vl53l5cx.vl53l5cx()
+tof = vl53l8cx.vl53l8cx()
 
 tof.start_ranging()
 
@@ -47,9 +47,9 @@ The sensor will be intialised automatically when the class is constructed. This 
 You can skip this initialisation by supplying the `skip_init=True` argument for a faster init on a sensor that hasn't lost power or been reset since it was last initialised:
 
 ```python
-import vl53l5cx
+import vl53l8cx
 
-tof = vl53l5cx.vl53l5cx(skip_init=True)
+tof = vl53l8cx.vl53l8cx(skip_init=True)
 ```
 
 ## Functions
@@ -74,7 +74,7 @@ tof.stop_ranging()
 
 #### Power Mode
 
-The VL53L5CX has two power modes: Continuous and Autonomous.
+The VL53L8CX has two power modes: Continuous and Autonomous.
 
 The operating mode can be selected with:
 
@@ -82,7 +82,7 @@ The operating mode can be selected with:
 tof.set_power_mode(mode)
 ```
 
-Where `mode` is one of `vl53l5cx.POWER_MODE_SLEEP` or `vl53l5cx.POWER_MODE_WAKEUP`.
+Where `mode` is one of `vl53l8cx.POWER_MODE_SLEEP` or `vl53l8cx.POWER_MODE_WAKEUP`.
 
 #### Check Data Available
 
@@ -121,7 +121,7 @@ target distance.
 
 Most of these values (except temperature) are lists of 64 entries, one for each of the zones in the sensor.
 
-A SPAD (single photon avalanche diode) is a single sensor element of the 8x8 VL53L5CX array.
+A SPAD (single photon avalanche diode) is a single sensor element of the 8x8 VL53L8CX array.
 
 TODO: the reference manual
 
@@ -222,9 +222,9 @@ tof.set_sharpener_percent(50)
 
 #### Target Order
 
-TODO: Right now the VL53L5CX driver only seems to support one target, enabling multiple targets results in no data.
+TODO: Right now the VL53L8CX driver only seems to support one target, enabling multiple targets results in no data.
 
-If you want to try it, you'll need to change the `VL53L5CX_NB_TARGET_PER_ZONE` value in `setup.py` to `4` (the maximum number of targets) and also change `NB_TARGET_PER_ZONE` in `vl53l5cx_ctypes/__init__.py` before recompiling the library. (You can use `python3 setup.py develop --user` for this.)
+If you want to try it, you'll need to change the `VL53L8CX_NB_TARGET_PER_ZONE` value in `setup.py` to `4` (the maximum number of targets) and also change `NB_TARGET_PER_ZONE` in `vl53l8cx_ctypes/__init__.py` before recompiling the library. (You can use `python3 setup.py develop --user` for this.)
 
 Data for multiple targets is simply concatenated onto the end of `signal_per_spad`, `range_sigma_mm`, `distance_mm`, `reflectance` and `target_status`.
 
@@ -236,7 +236,7 @@ tof.set_target_order(TARGET_ORDER_STRONGEST)
 
 ### Motion
 
-The VL53L5CX supports motion data output. Motion is calculated based on the change between sequential data frames, and is detected at a fixed distance window from the sensor.
+The VL53L8CX supports motion data output. Motion is calculated based on the change between sequential data frames, and is detected at a fixed distance window from the sensor.
 
 Motion data is available in the `motion_indicator` property, and comprises:
 
@@ -278,5 +278,5 @@ The minimum and maximum distances should be given in millimeters.
 
 ## Useful Links
 
-* Datasheet - https://www.st.com/resource/en/datasheet/vl53l5cx.pdf
-* ULD driver manual - https://www.st.com/resource/en/user_manual/um2884-a-guide-to-using-the-vl53l5cx-multizone-timeofflight-ranging-sensor-with-wide-field-of-view-ultra-lite-driver-uld-stmicroelectronics.pdf
+* Datasheet - https://www.st.com/resource/en/datasheet/vl53l8cx.pdf
+* ULD driver manual - https://www.st.com/resource/en/user_manual/um2884-a-guide-to-using-the-vl53l8cx-multizone-timeofflight-ranging-sensor-with-wide-field-of-view-ultra-lite-driver-uld-stmicroelectronics.pdf
