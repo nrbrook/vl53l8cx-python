@@ -2,8 +2,8 @@
 
 import time
 import ST7789
-import vl53l8cx_ctypes as vl53l8cx
-from vl53l8cx_ctypes import STATUS_RANGE_VALID, STATUS_RANGE_VALID_LARGE_PULSE
+import vl53_ctypes as vl53
+from vl53_ctypes import STATUS_RANGE_VALID, STATUS_RANGE_VALID_LARGE_PULSE
 import numpy
 from PIL import Image, ImageDraw
 

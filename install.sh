@@ -6,11 +6,12 @@ APT_HAS_UPDATED=false
 USER_HOME=/home/$SUDO_USER
 RESOURCES_TOP_DIR=$USER_HOME/Pimoroni
 WD=`pwd`
-USAGE="sudo ./install.sh (--unstable)"
+USAGE="sudo ./install.sh (--unstable) [--uld /path/to/STSW-IMGxxx.zip]"
 POSITIONAL_ARGS=()
 FORCE=false
 UNSTABLE=false
 PYTHON="/usr/bin/python3"
+ULD_ZIP=""
 
 
 user_check() {
@@ -110,6 +111,11 @@ while [[ $# -gt 0 ]]; do
 		shift
 		shift
 		;;
+	-U|--uld)
+		ULD_ZIP=$2
+		shift
+		shift
+		;;
 	*)
 		if [[ $1 == -* ]]; then
 			printf "Unrecognised option: $1\n";
@@ -132,7 +138,22 @@ PYTHON_VER=`$PYTHON --version`
 
 inform "Installing. Please wait..."
 
-$PYTHON -m pip install --upgrade configparser
+# Note: Do not install Python packages into the system interpreter here.
+# Raspberry Pi OS uses an externally-managed environment (PEP 668).
+# We'll install the library into the invoking user's site-packages instead.
+# If a ULD zip path was provided, import it before building
+if [ ! -z "$ULD_ZIP" ]; then
+    if [ ! -f "$ULD_ZIP" ]; then
+        warning "ULD zip not found: $ULD_ZIP"
+        exit 1
+    fi
+    inform "Importing ULD from $ULD_ZIP"
+    $PYTHON import_uld.py "$ULD_ZIP" --non-interactive
+    if [ $? -ne 0 ]; then
+        warning "ULD import failed. Aborting install."
+        exit 1
+    fi
+fi
 
 CONFIG_VARS=`$PYTHON - <<EOF
 from configparser import ConfigParser
@@ -190,9 +211,22 @@ cd library
 printf "Installing for $PYTHON_VER...\n"
 apt_pkg_install "${PY3_DEPS[@]}"
 if $UNSTABLE; then
-	$PYTHON setup.py install > /dev/null
+	if [ -n "$SUDO_USER" ]; then
+		# Install from source into the invoking user's site-packages
+		sudo -u $SUDO_USER -H $PYTHON setup.py install --user > /dev/null
+	else
+		# Fallback for environments without SUDO_USER (not recommended)
+		# Attempt a local install with a system override as a last resort
+		$PYTHON -m pip install . --break-system-packages > /dev/null 2>&1 || $PYTHON setup.py install > /dev/null
+	fi
 else
-	$PYTHON -m pip install --upgrade $LIBRARY_NAME
+	if [ -n "$SUDO_USER" ]; then
+		# Install from PyPI into the invoking user's site-packages
+		sudo -u $SUDO_USER -H $PYTHON -m pip install --user --upgrade $LIBRARY_NAME
+	else
+		# As a last resort, allow breaking the system packages (PEP 668 override)
+		$PYTHON -m pip install --upgrade $LIBRARY_NAME --break-system-packages
+	fi
 fi
 if [ $? -eq 0 ]; then
 	success "Done!\n"
@@ -201,13 +235,27 @@ fi
 
 cd $WD
 
+# Warn if no ULD API found to build against
+if [ ! -d "library/src" ] || ! ls library/src/*_ULD_API >/dev/null 2>&1; then
+	warning "No VL53 ULD API found under library/src."
+	inform "Use: python3 import_uld.py /path/to/STSW-IMGxxx.zip"
+fi
+
 for ((i = 0; i < ${#SETUP_CMDS[@]}; i++)); do
 	CMD="${SETUP_CMDS[$i]}"
 	# Attempt to catch anything that touches /boot/config.txt and trigger a backup
-	if [[ "$CMD" == *"raspi-config"* ]] || [[ "$CMD" == *"$CONFIG"* ]] || [[ "$CMD" == *"\$CONFIG"* ]]; then
+	if [[ "$CMD" == *"$CONFIG"* ]] || [[ "$CMD" == *"\$CONFIG"* ]]; then
 		do_config_backup
 	fi
-	eval $CMD
+	if [[ "$CMD" == *"raspi-config"* ]]; then
+		if command -v raspi-config >/dev/null 2>&1; then
+			eval $CMD
+		else
+			warning "raspi-config not found; skipping Raspberry Pi configuration step"
+		fi
+	else
+		eval $CMD
+	fi
 done
 
 for ((i = 0; i < ${#CONFIG_TXT[@]}; i++)); do
@@ -233,9 +281,9 @@ fi
 
 printf "\n"
 
-if [ -f "/usr/bin/pydoc" ]; then
+if [ -n "$SUDO_USER" ]; then
 	printf "Generating documentation.\n"
-	pydoc -w $LIBRARY_NAME > /dev/null
+	sudo -u $SUDO_USER -H $PYTHON -m pydoc -w $LIBRARY_NAME > /dev/null 2>&1
 	if [ -f "$LIBRARY_NAME.html" ]; then
 		cp $LIBRARY_NAME.html $RESOURCES_DIR/docs.html
 		rm -f $LIBRARY_NAME.html

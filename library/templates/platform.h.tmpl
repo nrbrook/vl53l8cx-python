@@ -1,0 +1,40 @@
+/* Auto-generated for {{UPPER}} */
+#ifndef _PLATFORM_H_
+#define _PLATFORM_H_
+#pragma once
+
+#include <stdint.h>
+#include <string.h>
+
+typedef int (*i2c_read_func)(uint8_t address, uint16_t reg, uint8_t *list, uint32_t length);
+typedef int (*i2c_write_func)(uint8_t address, uint16_t reg, uint8_t *list, uint32_t length);
+typedef int (*sleep_func)(uint32_t time_ms);
+
+typedef struct
+{
+    uint16_t address;
+    i2c_read_func i2c_read;
+    i2c_write_func i2c_write;
+    sleep_func sleep;
+} {{UPPER}}_Platform;
+
+uint8_t RdByte({{UPPER}}_Platform *p_platform, uint16_t RegisterAddress, uint8_t *p_value);
+uint8_t WrByte({{UPPER}}_Platform *p_platform, uint16_t RegisterAddress, uint8_t value);
+uint8_t RdMulti({{UPPER}}_Platform *p_platform, uint16_t RegisterAddress, uint8_t *p_values, uint32_t size);
+uint8_t WrMulti({{UPPER}}_Platform *p_platform, uint16_t RegisterAddress, uint8_t *p_values, uint32_t size);
+uint8_t Reset_Sensor({{UPPER}}_Platform *p_platform);
+void SwapBuffer(uint8_t *buffer, uint16_t size);
+uint8_t WaitMs({{UPPER}}_Platform *p_platform, uint32_t TimeMs);
+
+/* Map generic platform functions to variant-specific names expected by ULD */
+#define {{UPPER}}_RdByte RdByte
+#define {{UPPER}}_WrByte WrByte
+#define {{UPPER}}_RdMulti RdMulti
+#define {{UPPER}}_WrMulti WrMulti
+#define {{UPPER}}_Reset_Sensor Reset_Sensor
+#define {{UPPER}}_SwapBuffer SwapBuffer
+#define {{UPPER}}_WaitMs WaitMs
+
+#endif
+
+

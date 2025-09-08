@@ -1,0 +1,62 @@
+/* Auto-generated for {{UPPER}} */
+#include "platform.h"
+
+uint8_t RdByte({{UPPER}}_Platform *p_platform, uint16_t RegisterAddress, uint8_t *p_value)
+{
+    if (p_platform->i2c_read && p_platform->i2c_read(p_platform->address >> 1, RegisterAddress, p_value, 1) == 0) {
+        return 0;
+    }
+    return 255;
+}
+
+uint8_t WrByte({{UPPER}}_Platform *p_platform, uint16_t RegisterAddress, uint8_t value)
+{
+    if (p_platform->i2c_write && p_platform->i2c_write(p_platform->address >> 1, RegisterAddress, &value, 1) == 0) {
+        return 0;
+    }
+    return 255;
+}
+
+uint8_t WrMulti({{UPPER}}_Platform *p_platform, uint16_t RegisterAddress, uint8_t *p_values, uint32_t size)
+{
+    if (p_platform->i2c_write && p_platform->i2c_write(p_platform->address >> 1, RegisterAddress, p_values, size) == 0) {
+        return 0;
+    }
+    return 255;
+}
+
+uint8_t RdMulti({{UPPER}}_Platform *p_platform, uint16_t RegisterAddress, uint8_t *p_values, uint32_t size)
+{
+    if (p_platform->i2c_read && p_platform->i2c_read(p_platform->address >> 1, RegisterAddress, p_values, size) == 0) {
+        return 0;
+    }
+    return 255;
+}
+
+uint8_t Reset_Sensor({{UPPER}}_Platform *p_platform)
+{
+    (void)p_platform;
+    return 0;
+}
+
+void SwapBuffer(uint8_t *buffer, uint16_t size)
+{
+    uint32_t i, tmp;
+    for(i = 0; i < size; i = i + 4)
+    {
+        tmp = (
+          buffer[i]<<24)
+        |(buffer[i+1]<<16)
+        |(buffer[i+2]<<8)
+        |(buffer[i+3]);
+        memcpy(&(buffer[i]), &tmp, 4);
+    }
+}
+
+uint8_t WaitMs({{UPPER}}_Platform *p_platform, uint32_t TimeMs)
+{
+    if(p_platform->sleep) p_platform->sleep(TimeMs);
+    return 0;
+}
+
+

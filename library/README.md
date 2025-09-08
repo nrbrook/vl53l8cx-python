@@ -1,9 +1,9 @@
-# VL53L8CX CTypes Python Wrapper
+# VL53 CTypes Python Wrapper
 
-[![PyPi Package](https://img.shields.io/pypi/v/vl53l8cx-ctypes.svg)](https://pypi.python.org/pypi/vl53l8cx-ctypes)
-[![Python Versions](https://img.shields.io/pypi/pyversions/vl53l8cx-ctypes.svg)](https://pypi.python.org/pypi/vl53l8cx-ctypes)
+[![PyPi Package](https://img.shields.io/pypi/v/vl53-ctypes.svg)](https://pypi.python.org/pypi/vl53-ctypes)
+[![Python Versions](https://img.shields.io/pypi/pyversions/vl53-ctypes.svg)](https://pypi.python.org/pypi/vl53-ctypes)
 
-CTypes wrapper for the Sitronix VL53L8CX Ultra-light Driver- C source mirror can be found at https://github.com/ST-mirror/VL53L8CX_ULD_driver/tree/lite/en
+CTypes wrapper for ST VL53 series Ultra-light Drivers (ULD). Provide an ST ULD zip (eg: `STSW-IMG036`) and import it with `import_uld.py`.
 
 # Prerequisites
 
@@ -23,13 +23,24 @@ Note: The default baudrate is 200000 (200KHz) and a typical maximum for most dev
 
 # Installing
 
-* Just run `pip3 install vl53l8cx-ctypes`
+1. Import a ULD zip into the source tree:
+
+```
+python3 import_uld.py /path/to/STSW-IMG036.zip
+```
+
+2. Install from source:
+
+```
+python3 setup.py install --user
+```
 
 In some cases you may need to use `sudo` or install pip with: `sudo apt install python3-pip`
 
 Latest/development library from GitHub:
 
-* `git clone https://github.com/pimoroni/vl53l8cx-python
+* `git clone https://github.com/pimoroni/vl53l8cx-python`
+* `python3 import_uld.py /path/to/STSW-IMG036.zip`
 * `cd vl53l8cx-python/library`
 * `python3 setup.py install --user`
 

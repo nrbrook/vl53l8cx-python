@@ -1,0 +1,81 @@
+extern "C" {
+#include "{{lower}}_api.h"
+#if {{HAS_MOTION}}
+#include "{{lower}}_plugin_motion_indicator.h"
+#endif
+#if {{HAS_XTALK}}
+#include "{{lower}}_plugin_xtalk.h"
+#endif
+#if {{HAS_THRESH}}
+#include "{{lower}}_plugin_detection_thresholds.h"
+#endif
+
+{{UPPER}}_Configuration* get_configuration(uint8_t i2c_addr, i2c_read_func i2c_read, i2c_write_func i2c_write, sleep_func sleep_ms) {
+	{{UPPER}}_Configuration *configuration = new {{UPPER}}_Configuration{
+		.platform = {
+			.address = i2c_addr,
+			.i2c_read = i2c_read,
+			.i2c_write = i2c_write,
+			.sleep = sleep_ms
+		},
+	};
+	return configuration;
+}
+
+void cleanup_configuration({{UPPER}}_Configuration *configuration) {
+	delete configuration;
+}
+
+#if {{HAS_MOTION}}
+{{UPPER}}_Motion_Configuration* get_motion_configuration() {
+	{{UPPER}}_Motion_Configuration *configuration = new {{UPPER}}_Motion_Configuration{};
+	return configuration;
+}
+
+void cleanup_motion_configuration({{UPPER}}_Motion_Configuration *motion_configuration) {
+	delete motion_configuration;
+}
+#endif
+
+#if {{IS_L7}}
+uint8_t vl53_is_alive({{UPPER}}_Configuration *cfg, uint8_t *is_alive) { return {{lower}}_is_alive(cfg, is_alive); }
+#else
+uint8_t vl53_is_alive({{UPPER}}_Configuration *cfg, int *is_alive) { return {{lower}}_is_alive(cfg, is_alive); }
+#endif
+uint8_t vl53_init({{UPPER}}_Configuration *cfg) { return {{lower}}_init(cfg); }
+uint8_t vl53_set_i2c_address({{UPPER}}_Configuration *cfg, uint16_t address) { return {{lower}}_set_i2c_address(cfg, address); }
+uint8_t vl53_get_power_mode({{UPPER}}_Configuration *cfg, uint8_t *power_mode) { return {{lower}}_get_power_mode(cfg, power_mode); }
+uint8_t vl53_set_power_mode({{UPPER}}_Configuration *cfg, uint8_t power_mode) { return {{lower}}_set_power_mode(cfg, power_mode); }
+uint8_t vl53_start_ranging({{UPPER}}_Configuration *cfg) { return {{lower}}_start_ranging(cfg); }
+uint8_t vl53_stop_ranging({{UPPER}}_Configuration *cfg) { return {{lower}}_stop_ranging(cfg); }
+uint8_t vl53_check_data_ready({{UPPER}}_Configuration *cfg, uint8_t *ready) { return {{lower}}_check_data_ready(cfg, ready); }
+uint8_t vl53_get_ranging_data({{UPPER}}_Configuration *cfg, void *results) { return {{lower}}_get_ranging_data(cfg, ({{UPPER}}_ResultsData*)results); }
+uint8_t vl53_get_resolution({{UPPER}}_Configuration *cfg, uint8_t *resolution) { return {{lower}}_get_resolution(cfg, resolution); }
+uint8_t vl53_set_resolution({{UPPER}}_Configuration *cfg, uint8_t resolution) { return {{lower}}_set_resolution(cfg, resolution); }
+uint8_t vl53_get_ranging_frequency_hz({{UPPER}}_Configuration *cfg, uint8_t *frequency_hz) { return {{lower}}_get_ranging_frequency_hz(cfg, frequency_hz); }
+uint8_t vl53_set_ranging_frequency_hz({{UPPER}}_Configuration *cfg, uint8_t frequency_hz) { return {{lower}}_set_ranging_frequency_hz(cfg, frequency_hz); }
+uint8_t vl53_get_integration_time_ms({{UPPER}}_Configuration *cfg, uint32_t *integration_time_ms) { return {{lower}}_get_integration_time_ms(cfg, integration_time_ms); }
+uint8_t vl53_set_integration_time_ms({{UPPER}}_Configuration *cfg, uint32_t integration_time_ms) { return {{lower}}_set_integration_time_ms(cfg, integration_time_ms); }
+uint8_t vl53_get_sharpener_percent({{UPPER}}_Configuration *cfg, uint8_t *sharpener_percent) { return {{lower}}_get_sharpener_percent(cfg, sharpener_percent); }
+uint8_t vl53_set_sharpener_percent({{UPPER}}_Configuration *cfg, uint8_t sharpener_percent) { return {{lower}}_set_sharpener_percent(cfg, sharpener_percent); }
+uint8_t vl53_get_target_order({{UPPER}}_Configuration *cfg, uint8_t *target_order) { return {{lower}}_get_target_order(cfg, target_order); }
+uint8_t vl53_set_target_order({{UPPER}}_Configuration *cfg, uint8_t target_order) { return {{lower}}_set_target_order(cfg, target_order); }
+uint8_t vl53_get_ranging_mode({{UPPER}}_Configuration *cfg, uint8_t *ranging_mode) { return {{lower}}_get_ranging_mode(cfg, ranging_mode); }
+uint8_t vl53_set_ranging_mode({{UPPER}}_Configuration *cfg, uint8_t ranging_mode) { return {{lower}}_set_ranging_mode(cfg, ranging_mode); }
+#if {{IS_L7}}
+uint8_t vl53_dci_read_data({{UPPER}}_Configuration *cfg, uint8_t *data, uint32_t index, uint16_t size) { return {{lower}}_dci_read_data(cfg, data, index, size); }
+uint8_t vl53_dci_write_data({{UPPER}}_Configuration *cfg, uint8_t *data, uint32_t index, uint16_t size) { return {{lower}}_dci_write_data(cfg, data, index, size); }
+uint8_t vl53_dci_replace_data({{UPPER}}_Configuration *cfg, uint8_t *data, uint32_t index, uint16_t data_size, uint8_t *new_data, uint16_t new_data_size, uint16_t replace_index) { return {{lower}}_dci_replace_data(cfg, data, index, data_size, new_data, new_data_size, replace_index); }
+#else
+uint8_t vl53_dci_read_data({{UPPER}}_Configuration *cfg, uint16_t address, uint8_t *data, uint16_t size) { return {{lower}}_dci_read_data(cfg, address, data, size); }
+uint8_t vl53_dci_write_data({{UPPER}}_Configuration *cfg, uint16_t address, uint8_t *data, uint16_t size) { return {{lower}}_dci_write_data(cfg, address, data, size); }
+uint8_t vl53_dci_replace_data({{UPPER}}_Configuration *cfg, uint16_t address, uint8_t *data, uint16_t size, uint16_t offset) { return {{lower}}_dci_replace_data(cfg, address, data, size, offset); }
+#endif
+
+#if {{HAS_MOTION}}
+uint8_t vl53_motion_indicator_init({{UPPER}}_Configuration *cfg, {{UPPER}}_Motion_Configuration *mcfg, uint8_t resolution) { return {{lower}}_motion_indicator_init(cfg, mcfg, resolution); }
+uint8_t vl53_motion_indicator_set_distance_motion({{UPPER}}_Configuration *cfg, {{UPPER}}_Motion_Configuration *mcfg, uint16_t min, uint16_t max) { return {{lower}}_motion_indicator_set_distance_motion(cfg, mcfg, min, max); }
+#endif
+}
+
+
